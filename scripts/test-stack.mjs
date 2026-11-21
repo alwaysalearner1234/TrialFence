@@ -18,7 +18,9 @@ const env = { ...process.env, DB_FILE: path.join(temp, "test.db"), ISSUER_API_KE
   PORT_ISSUER: "4001", PORT_RELAYER: "4002", OPENAI_API_KEY: "" };
 env.OWNER_PRIVATE_KEY = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 env.ISSUER_PRIVATE_KEY = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
-env.RELAYER_PRIVATE_KEY = "0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a";
+// Deliberately not a pre-funded Hardhat account. The deployment step must fund
+// this custom relayer or the first enrollment transaction will fail for gas.
+env.RELAYER_PRIVATE_KEY = "0x1111111111111111111111111111111111111111111111111111111111111111";
 env.HMAC_SECRET = "integration-test-only-hmac";
 
 function start(label, args, cwd = root, inherit = false) {

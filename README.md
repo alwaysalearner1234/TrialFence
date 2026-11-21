@@ -86,7 +86,7 @@ flowchart LR
 | Module | Responsibility | Design rationale |
 |---|---|---|
 | `contracts/contracts/TrialFence.sol` | Protocol/site registry, issuer-gated group membership, Groth16 enrollment gate, nullifier registry | The duplicate check must be verifiable and tamper-evident; the chain is the neutral arbiter across sites |
-| `contracts/scripts/deploy.ts` | Deploys `SemaphoreVerifier`, `PoseidonT3`, and `TrialFence`; aligns owner/issuer keys; funds accounts with `hardhat_setBalance` | Prevents `NotOwner` / `NotIssuer` failures caused by mismatched local keys |
+| `contracts/scripts/deploy.ts` | Deploys `SemaphoreVerifier`, `PoseidonT3`, and `TrialFence`; aligns owner/issuer keys; funds owner, issuer, and relayer with `hardhat_setBalance` | Prevents signer-role mismatches and ensures every local-demo transaction sender can pay gas |
 | `server/src/issuer` | `POST /register` — verifies a test document once, HMAC-dedupes it, issues membership | Identity verification stays off-chain and centralized at the issuer boundary |
 | `server/src/relayer` | Protocol/site registration, `POST /enroll` preflight via `staticCall`, gas payment, signed denial records, `/events`, `/monitor/summary` | Separates the participant-facing gate from key custody; the browser never holds a wallet key |
 | `server/src/monitor.ts` | Deterministic, PII-free anomaly flags over public events and denial records; optional LLM narrative | Auditing must not require access to participant identity |

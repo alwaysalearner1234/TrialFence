@@ -49,6 +49,17 @@ async function main() {
     issuerAddress =
       issuerFromKey ?? process.env.ISSUER_ADDRESS?.trim() ?? signers[1]?.address ?? "";
     if (issuerAddress) await fundIfNeeded(issuerAddress, "issuer");
+
+    // Enrollment transactions are submitted by the relayer wallet, not the
+    // owner. Render and other hosted demos commonly inject a custom relayer
+    // key whose address is not one of Hardhat's pre-funded accounts. Without
+    // this, registry and membership writes succeed but every enrollment fails
+    // at eth_sendRawTransaction with "sender doesn't have enough funds".
+    const relayerKey = process.env.RELAYER_PRIVATE_KEY?.trim();
+    const relayerAddress = relayerKey
+      ? new ethers.Wallet(relayerKey).address
+      : signers[2]?.address ?? "";
+    if (relayerAddress) await fundIfNeeded(relayerAddress, "relayer");
   } else {
     // Public testnet: keep the existing DEPLOYER_PRIVATE_KEY signer and require
     // an explicit ISSUER_ADDRESS.

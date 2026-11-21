@@ -157,6 +157,14 @@ function isTransportError(err: unknown): boolean {
   ].some((rx) => rx.test(message));
 }
 
+/** A gas-starved relayer is an operator/infrastructure failure, never a
+ * participant denial. Keep it out of the signed denial table and return an
+ * actionable error instead of the generic "could not classify" response. */
+function isInsufficientFundsError(err: unknown): boolean {
+  const message = String((err as Error)?.message ?? "");
+  return /insufficient funds|doesn't have enough funds|max upfront cost/i.test(message);
+}
+
 /** Standalone SNARK validity check against the on-chain verifier (view call, no
  * state change). Used to tell a *verified* duplicate — a well-formed proof
  * whose nullifier is already consumed — from a fabricated request that merely
@@ -227,6 +235,19 @@ app.post(
         return await tx.wait();
       });
     } catch (err) {
+      if (isInsufficientFundsError(err)) {
+        const relayerAddress = await relayerWallet().getAddress();
+        console.error(
+          `Enrollment relayer unfunded address=${relayerAddress} protocol=${protocolId} site=${siteId}`
+        );
+        return res.status(503).json({
+          status: "error",
+          error: "RELAYER_UNFUNDED",
+          accepted: false,
+          reason: "RELAYER_UNFUNDED",
+          detail: "relayer wallet lacks native gas funds; fund the configured RELAYER_PRIVATE_KEY address and retry",
+        });
+      }
       // Transport/node failures are NOT denials: nothing was classified
       // on-chain, so nothing is recorded. Reported as RPC_FAILURE (503).
       if (isTransportError(err)) {
