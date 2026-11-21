@@ -2,7 +2,7 @@
 
 **Privacy-preserving duplicate-enrollment gate for multi-site clinical trials.**
 
-[![CI](https://github.com/alwaysalearner1234/Trial_fence/actions/workflows/ci.yml/badge.svg)](https://github.com/alwaysalearner1234/Trial_fence/actions/workflows/ci.yml)
+[![CI](https://github.com/alwaysalearner1234/TrialFence/actions/workflows/ci.yml/badge.svg)](https://github.com/alwaysalearner1234/TrialFence/actions/workflows/ci.yml)
 ![Node](https://img.shields.io/badge/node-%E2%89%A522-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white)
